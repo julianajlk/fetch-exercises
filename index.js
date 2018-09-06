@@ -2,13 +2,22 @@ const body = document.querySelector('body')
 const peopleContainer = document.createElement('div')
 peopleContainer.classList.add('people-container')
 body.appendChild(peopleContainer)
+const planetContainer = document.createElement('div')
+planetContainer.classList.add('planet-container')
+body.appendChild(planetContainer)
+const renderContainer = document.createElement('div')
+renderContainer.classList.add('render-container')
+planetContainer.appendChild(renderContainer)
 
 document.addEventListener('DOMContentLoaded', function() {
+  let h2 = document.createElement('h2')
+  h2.innerText = 'People'
+  peopleContainer.appendChild(h2)
   fetchOneStarWars()
   // createPlanetForm()
   submitEventListener()
-  fetchC()
-  fetchR()
+  fetchPeople(2)
+  fetchPeople(3)
 })
 
 function fetchOneStarWars() {
@@ -51,8 +60,8 @@ function submitEventListener() {
   document.querySelector('#planet-form').addEventListener('submit', handlePlanetForm)
 }
 function createPlanetForm() {
-  let planetContainer = document.createElement('div')
-  planetContainer.classList.add('planet-container')
+  let formContainer = document.createElement('div')
+  formContainer.classList.add('form-container')
   let form = document.createElement('form')
   form.id = 'planet-form'
   let h2Element = document.createElement('h2')
@@ -66,10 +75,10 @@ function createPlanetForm() {
   let inputSubmit = document.createElement('input')
   inputSubmit.setAttribute('type', 'submit')
 
-  body.appendChild(planetContainer)
-  planetContainer.appendChild(h2Element)
-  planetContainer.appendChild(h4Element)
-  planetContainer.appendChild(form)
+  planetContainer.appendChild(formContainer)
+  formContainer.appendChild(h2Element)
+  formContainer.appendChild(h4Element)
+  formContainer.appendChild(form)
   form.appendChild(inputNumber)
   form.appendChild(inputSubmit)
 }
@@ -99,68 +108,38 @@ function renderPlanets(planet) {
   let climate = document.createElement('h4')
   climate.innerText = `Climate: ${planet.climate}`
 
-  document.querySelector('.planet-container').appendChild(name)
-  document.querySelector('.planet-container').appendChild(climate)
+  renderContainer.appendChild(name)
+  renderContainer.appendChild(climate)
 }
 
 
 //3. Droids
 //When the page loads, fetch the data for C-3P0 (id: 2) and R2-D2 (id: 3)
-function fetchC() {
-  fetch(`https://swapi.co/api/people/2/`)
+function fetchPeople(peopleId) {
+  fetch(`https://swapi.co/api/people/${peopleId}/`)
   .then(response => response.json())
-  .then(cData => {
-    renderC(cData)
-  })
-}
-
-function fetchR() {
-  fetch(`https://swapi.co/api/people/3/`)
-  .then(response => response.json())
-  .then(rData => {
-    renderR(rData)
+  .then(data => {
+    renderPeople(data)
   })
 }
 
 //Show each droid's name, height, and mass on the screen
-function renderC(cData) {
-  let h2 = document.createElement('h2')
-  h2.innerText = 'People'
+function renderPeople(data) {
   let name = document.createElement('h4')
-  name.innerText = `Name: ${cData.name}`
+  name.innerText = `Name: ${data.name}`
   let height = document.createElement('h4')
-  height.innerText = `Height: ${cData.height}`
+  height.innerText = `Height: ${data.height}`
   let mass = document.createElement('h4')
-  mass.innerText = `Mass: ${cData.mass}`
+  mass.innerText = `Mass: ${data.mass}`
   let peopleButton = document.createElement('button')
   peopleButton.innerText = 'Show Homeworld Details'
-  peopleButton.dataset.id = cData.homeworld.split('/')[5]
+  peopleButton.dataset.id = data.homeworld.split('/')[5]
   peopleButton.addEventListener('click', function() {
+    renderContainer.innerHTML= ''
     fetchPlanetFromPeople()
-  })
 
-  peopleContainer.appendChild(h2)
-  peopleContainer.appendChild(name)
-  peopleContainer.appendChild(height)
-  peopleContainer.appendChild(mass)
-  peopleContainer.appendChild(peopleButton)
-}
 
-function renderR(rData) {
-  let h2 = document.createElement('h2')
-  let name = document.createElement('h4')
-  name.innerText = `Name: ${rData.name}`
-  let height = document.createElement('h4')
-  height.innerText = `Height: ${rData.height}`
-  let mass = document.createElement('h4')
-  mass.innerText = `Mass: ${rData.mass}`
-  let peopleButton = document.createElement('button')
-  peopleButton.innerText = 'Show Homeworld Details'
-  peopleButton.dataset.id = rData.homeworld.split('/')[5]
-  peopleButton.addEventListener('click', function() {
-    fetchPlanetFromPeople()
   })
-  peopleContainer.appendChild(h2)
   peopleContainer.appendChild(name)
   peopleContainer.appendChild(height)
   peopleContainer.appendChild(mass)
